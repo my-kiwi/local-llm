@@ -40,7 +40,7 @@ function initializeChat() {
   const requestInput = document.getElementById('llm-request') as HTMLTextAreaElement;
   const responseOutput = document.getElementById('llm-response') as HTMLTextAreaElement;
 
-  requestInput.addEventListener('keypress', async (event) => {
+  requestInput?.addEventListener('keypress', async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
       if (!session) {
