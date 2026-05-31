@@ -1,5 +1,5 @@
-# Notes
-Basic notes app PWA: https://my-kiwi.github.io/notes
+# local-llm
+local LLM experiments app PWA: https://my-kiwi.github.io/local-llm
 
 ## Install the PWA
 ### Apple iOS

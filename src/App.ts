@@ -1,10 +1,10 @@
-import { Notes } from './Notes';
+import { Chat } from './chat';
 import { GithubLink } from './GithubLink';
 
 export const App = (): string => {
   return `
     <main>
-      ${Notes()}
+      ${Chat()}
     </main>
     <footer>
       ${GithubLink()}
