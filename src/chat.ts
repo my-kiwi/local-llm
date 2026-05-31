@@ -4,6 +4,13 @@ let llmAvailabilityStatus = 'unknown';
 let session: unknown = null;
 
 export const Chat = (): string => {
+  if (!LanguageModel) {
+    return `
+      <div>
+        LLM Availability: <span id="llm-status">The experimental LanguageModel API is not available in your browser.</span>
+      </div>
+    `;
+  }
   loadLLM();
   initializeChat();
   return `
