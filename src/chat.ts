@@ -34,7 +34,7 @@ const createSession = async () => {
     console.error('Error creating LanguageModel session:', error);
     document.getElementById('llm-status')!.textContent = 'error initializing LanguageModel';
   });
-}
+};
 
 function initializeChat() {
   const requestInput = document.getElementById('llm-request') as HTMLTextAreaElement;
@@ -43,7 +43,7 @@ function initializeChat() {
   requestInput.addEventListener('keypress', async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault();
-      if( !session) {
+      if (!session) {
         responseOutput.value = 'LanguageModel session not initialized yet.';
         return;
       }
