@@ -1,7 +1,13 @@
-const LanguageModel = (window as any).LanguageModel;
+const LanguageModel = (window as any).LanguageModel; // fixme any
 
 let llmAvailabilityStatus = 'unknown';
-let session: unknown = null;
+let session: any = null; // fixme any
+
+// see https://developer.chrome.com/docs/ai/prompt-api?hl=fr#add_expected_input_and_output
+const llmOptions = {
+  expectedInputs: [{ type: 'text', languages: ['en' /* system prompt */, 'ja' /* user prompt */] }],
+  expectedOutputs: [{ type: 'text', languages: ['ja'] }],
+};
 
 export const Chat = (): string => {
   if (!LanguageModel) {
@@ -11,13 +17,15 @@ export const Chat = (): string => {
       </div>
     `;
   }
-  loadLLM();
-  initializeChat();
+  requestAnimationFrame(() => {
+    loadLLM();
+    initializeChat();
+  });
   return `
     <div>
       LLM Availability: <span id="llm-status">trying to load LanguageModel (chrome experimental local LLM)</span>
     </div>
-    <textarea id="llm-response" style="display:none;" placeholder="AI will answer here"></textarea>
+    <div id="llm-response" style="display:none;" placeholder="AI will answer here" readonly></div>
     <textarea id="llm-request"  style="display:none;" placeholder="Ask whatever"></textarea>
   `;
 };
@@ -25,7 +33,7 @@ export const Chat = (): string => {
 const loadLLM = async () => {
   llmAvailabilityStatus = 'checking';
   let intervalId = setInterval(async () => {
-    llmAvailabilityStatus = await LanguageModel.availability({ languages: ['en', 'fr'] });
+    llmAvailabilityStatus = await LanguageModel.availability(llmOptions);
     document.getElementById('llm-status')!.textContent = llmAvailabilityStatus;
     if (llmAvailabilityStatus === 'available') {
       clearInterval(intervalId);
@@ -37,7 +45,7 @@ const loadLLM = async () => {
 };
 
 const createSession = async () => {
-  await LanguageModel.create().catch((error: any) => {
+  return await LanguageModel.create(llmOptions).catch((error: any) => {
     console.error('Error creating LanguageModel session:', error);
     document.getElementById('llm-status')!.textContent = 'error initializing LanguageModel';
   });
@@ -48,27 +56,25 @@ function initializeChat() {
   const responseOutput = document.getElementById('llm-response') as HTMLTextAreaElement;
 
   requestInput?.addEventListener('keypress', async (event) => {
+    console.log('Key pressed:', event.key);
     if (event.key === 'Enter' && !event.shiftKey) {
+      // TODO add send button for mobile
+      console.log('Enter key pressed. User input:', requestInput.value);
       event.preventDefault();
       if (!session) {
-        responseOutput.value = 'LanguageModel session not initialized yet.';
+        responseOutput.textContent = 'LanguageModel session not initialized yet.';
         return;
       }
-      // const userInput = requestInput.value.trim();
-      // if (userInput) {
-      //   responseOutput.value = 'Thinking...';
-      //   try {
-      //     const response = await fetch('/api/chat', {
-      //       method: 'POST',
-      //       headers: { 'Content-Type': 'application/json' },
-      //       body: JSON.stringify({ message: userInput }),
-      //     });
-      //     const data = await response.json();
-      //     responseOutput.value = data.reply;
-      //   } catch (error) {
-      //     responseOutput.value = 'Error fetching response.';
-      //   }
-      // }
+      const userInput = requestInput.value.trim();
+      if (userInput) {
+        responseOutput.textContent = 'Thinking...';
+        try {
+          const response = await session.prompt(userInput);
+          responseOutput.textContent = response;
+        } catch (error: any) {
+          responseOutput.textContent = 'Error fetching response: ' + error.message;
+        }
+      }
     }
   });
 }
