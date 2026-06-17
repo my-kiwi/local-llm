@@ -1,7 +1,7 @@
 // Set WEBLLM_CONFIG to select the WebLLM backend
 (window as any).WEBLLM_CONFIG = {
   apiKey: 'dummy', // Required for now by the loader
-  modelName: 'Phi-2-q4f32_1-M' // Optional: override default
+  modelName: 'Phi-2-q4f32_1-M', // Optional: override default
 };
 
 if (!('LanguageModel' in window)) {
