@@ -58,7 +58,7 @@ const loadLLM = async () => {
 const createSession = async () => {
   return await LanguageModel.create(llmOptions).catch((error: any) => {
     console.error('Error creating LanguageModel session:', error);
-    document.getElementById('llm-status')!.textContent = 'error initializing LanguageModel';
+    document.getElementById('llm-status')!.textContent = 'error initializing LanguageModel' + error.message;
   });
 };
 
