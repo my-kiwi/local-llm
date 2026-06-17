@@ -48,9 +48,9 @@ const loadLLM = async () => {
     document.getElementById('llm-status')!.textContent = llmAvailabilityStatus;
     if (llmAvailabilityStatus === 'available') {
       clearInterval(intervalId);
+      session = await createSession();
       document.getElementById('llm-response')!.style.display = 'block';
       document.getElementById('llm-request')!.style.display = 'block';
-      session = await createSession();
     }
   }, 1000);
 };
