@@ -1,3 +1,14 @@
+// Set WEBLLM_CONFIG to select the WebLLM backend
+(window as any).WEBLLM_CONFIG = {
+  apiKey: 'dummy', // Required for now by the loader
+  // modelName: 'Llama-3.2-3B-Instruct-q4f32_1-MLC', // Optional: override default
+};
+
+if (!('LanguageModel' in window)) {
+  // ts-ignore-next-line
+  await import('prompt-api-polyfill' as any);
+}
+
 const LanguageModel = (window as any).LanguageModel; // fixme any
 
 let llmAvailabilityStatus = 'unknown';
@@ -22,7 +33,7 @@ export const Chat = (): string => {
     initializeChat();
   });
   return `
-    <div>
+    <div><span id="polyfill"></span>
       LLM Availability: <span id="llm-status">trying to load LanguageModel (chrome experimental local LLM)</span>
     </div>
     <div id="llm-response" style="display:none;" placeholder="AI will answer here" readonly></div>
