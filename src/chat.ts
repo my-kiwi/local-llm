@@ -1,7 +1,7 @@
 // Set WEBLLM_CONFIG to select the WebLLM backend
 (window as any).WEBLLM_CONFIG = {
   apiKey: 'dummy', // Required for now by the loader
-  modelName: 'Llama-3.2-3B-Instruct-q4f32_1-MLC', // Optional: override default
+  modelName: 'TinyLlama-1.1B-q4f32_1-MLC', // Optional: override default
 };
 
 if (!('LanguageModel' in window)) {
