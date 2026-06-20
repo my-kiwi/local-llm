@@ -20,6 +20,18 @@ const llmOptions = {
   expectedOutputs: [{ type: 'text', languages: ['ja'] }],
 };
 
+const getResponseOutput = () => {
+  return document.getElementById('llm-response') as HTMLTextAreaElement;
+}
+
+const getRequestInput = () => {
+  return document.getElementById('llm-request') as HTMLTextAreaElement;
+}
+
+const getStatusElement = () => {
+  return document.getElementById('llm-status') as HTMLSpanElement;
+}
+
 export const Chat = (): string => {
   if (!LanguageModel) {
     return `
@@ -45,30 +57,35 @@ const loadLLM = async () => {
   llmAvailabilityStatus = 'checking';
   let intervalId = setInterval(async () => {
     llmAvailabilityStatus = await LanguageModel.availability(llmOptions);
-    document.getElementById('llm-status')!.textContent = llmAvailabilityStatus;
+    getStatusElement().textContent = llmAvailabilityStatus;
     if (llmAvailabilityStatus === 'available') {
       clearInterval(intervalId);
       session = await createSession();
-      document.getElementById('llm-response')!.style.display = 'block';
-      document.getElementById('llm-request')!.style.display = 'block';
+      console.log('LanguageModel session created:', session);
+      sendMessage(`Welcome me and present yourself in ${navigator.language} language.
+        Then ask me what I want to do. 
+        Do not start with "allright" or "ok" or "sure" or "of course" or "certainly" or "absolutely" or "definitely" or "without a doubt".
+        Keep it short but relaxed and friendly, add a smiley face at the end of your message.`);
+      getStatusElement().textContent = 'LanguageModel session created successfully.';
+      getResponseOutput().style.display = 'block';
+      getRequestInput().style.display = 'block';
     }
   }, 1000);
 };
 
 const createSession = async () => {
-  document.getElementById('llm-status')!.textContent = 'creating session...';
+  getStatusElement().textContent = 'creating session...';
   return await LanguageModel.create(llmOptions).catch((error: any) => {
     console.error('Error creating LanguageModel session:', error);
-    document.getElementById('llm-status')!.textContent = 'create error: ' + error.message;
+    getStatusElement().textContent = 'create error: ' + error.message;
   });
 };
 
 function initializeChat() {
-  const requestInput = document.getElementById('llm-request') as HTMLTextAreaElement;
-  const responseOutput = document.getElementById('llm-response') as HTMLTextAreaElement;
+  const requestInput = getRequestInput();
+  const responseOutput = getResponseOutput();
 
-  requestInput?.addEventListener('keypress', async (event) => {
-    console.log('Key pressed:', event.key);
+  requestInput.addEventListener('keypress', async (event) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       // TODO add send button for mobile
       console.log('Enter key pressed. User input:', requestInput.value);
@@ -77,16 +94,22 @@ function initializeChat() {
         responseOutput.textContent = 'LanguageModel session not initialized yet.';
         return;
       }
-      const userInput = requestInput.value.trim();
-      if (userInput) {
-        responseOutput.textContent = 'Thinking...';
-        try {
-          const response = await session.prompt(userInput);
-          responseOutput.textContent = response;
-        } catch (error: any) {
-          responseOutput.textContent = 'Error fetching response: ' + error.message;
-        }
-      }
+      await sendMessage(requestInput.value.trim())
     }
   });
+}
+
+
+
+async function sendMessage(userInput: string) {
+  const responseOutput = getResponseOutput();
+  if (userInput) {
+    responseOutput.textContent = 'Thinking...';
+    try {
+      const response = await session.prompt(userInput);
+      responseOutput.textContent = response;
+    } catch (error: any) {
+      responseOutput.textContent = 'Error fetching response: ' + error.message;
+    }
+  }
 }
