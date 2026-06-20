@@ -16,8 +16,8 @@ let session: any = null; // fixme any
 
 // see https://developer.chrome.com/docs/ai/prompt-api?hl=fr#add_expected_input_and_output
 const llmOptions = {
-  expectedInputs: [{ type: 'text', languages: ['en' /* system prompt */, 'ja' /* user prompt */] }],
-  expectedOutputs: [{ type: 'text', languages: ['ja'] }],
+  expectedInputs: [{ type: 'text', languages: ['en' /* system prompt */, 'fr' /* user prompt */] }],
+  expectedOutputs: [{ type: 'text', languages: ['fr', 'en'] }],
 };
 
 const getResponseOutput = () => {
