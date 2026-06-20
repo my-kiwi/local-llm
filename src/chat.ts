@@ -22,15 +22,15 @@ const llmOptions = {
 
 const getResponseOutput = () => {
   return document.getElementById('llm-response') as HTMLTextAreaElement;
-}
+};
 
 const getRequestInput = () => {
   return document.getElementById('llm-request') as HTMLTextAreaElement;
-}
+};
 
 const getStatusElement = () => {
   return document.getElementById('llm-status') as HTMLSpanElement;
-}
+};
 
 export const Chat = (): string => {
   if (!LanguageModel) {
@@ -94,12 +94,10 @@ function initializeChat() {
         responseOutput.textContent = 'LanguageModel session not initialized yet.';
         return;
       }
-      await sendMessage(requestInput.value.trim())
+      await sendMessage(requestInput.value.trim());
     }
   });
 }
-
-
 
 async function sendMessage(userInput: string) {
   const responseOutput = getResponseOutput();
