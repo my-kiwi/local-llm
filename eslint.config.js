@@ -20,6 +20,8 @@ export default defineConfig([
       globals: {
         ...globals.browser,
         ...globals.node,
+        LanguageModel: 'readonly',
+        LanguageModelExpected: 'readonly',
       },
     },
     plugins: {
