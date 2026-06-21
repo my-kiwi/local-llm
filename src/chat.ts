@@ -30,7 +30,7 @@ if (!('LanguageModel' in window)) {
 }
 
 let llmAvailabilityStatus = 'unknown';
-let session: any = null; // fixme any
+let session: LanguageModel | null = null;
 
 // see https://developer.chrome.com/docs/ai/prompt-api?hl=fr#add_expected_input_and_output
 
